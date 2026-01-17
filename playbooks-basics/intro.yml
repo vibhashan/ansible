@@ -1,0 +1,11 @@
+#!/home/vibhashana/.venvs/ansible-13.1.0/bin/ansible-playbook
+# Above shebang avoids the need to specify 'ansible-playbook' command to execute the playbook
+# Make the yml file executable
+
+- name: Introduction to Ansible Playbooks
+  hosts: all
+  remote_user: ubuntu
+
+  tasks:
+    - name: Checking Connection
+      ping:

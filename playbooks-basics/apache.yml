@@ -1,0 +1,16 @@
+- name: Apache Webserver
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+
+  tasks:
+    - name: Ensure Apache is at the latest version
+      apt:
+        name: apache2
+        state: latest
+
+    - name: Uninstall Apache
+      apt:
+        name: apache2
+        state: absent

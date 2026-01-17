@@ -1,0 +1,31 @@
+- name: Overview of Ansible Debug Module
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - name: Debug Module Messaging
+      debug:
+        msg: Hello World
+
+    - name: Print 2 lines of messages
+      debug:
+        msg:
+          - Hi, this is a multine line msg
+          - This is the second line
+
+    - name: Print a variable
+      debug:
+        msg:
+          - Host IP is - {{ inventory_hostname }}
+
+    - name: Debug Module Var Parameter
+      debug:
+        var: inventory_hostname
+
+    - name: Verbosity in Debug Module
+      debug:
+        msg: This is deep logging at debug level 2 # Printed only when ansible-playbook is run with -vv or greater verbosity level
+        verbosity: 2

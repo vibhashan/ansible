@@ -1,0 +1,21 @@
+- name: Overview of Ansible Arithmetic Operations
+  hosts: localhost
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  vars:
+    a: 10
+    b: 20
+
+  tasks:
+    - name: Operations on variables
+      debug:
+        msg:
+          - Value of a is {{ a }}
+          - Value of b is {{ b }}
+          - "{{ a }} + {{ b }} = {{ a + b }}"
+          - "{{ a }} - {{ b }} = {{ a - b }}"
+          - "{{ a }} * {{ b }} = {{ a * b }}"
+          - "{{ a }} / {{ b }} = {{ a / b }}"

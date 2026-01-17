@@ -1,0 +1,32 @@
+- name: Overview of Ansible Data Collection
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  vars:
+    xyz: XYZ
+    packages: ["tree", "git", "curl", "jq"]
+    cities:
+      - Colombo
+      - Jaffna
+      - Kandy
+    web_servers: { "Linux": "httpd", "Unix": "apache2" }
+
+  tasks:
+    - name: Data Collection Retrieval
+      debug:
+        var: xyz
+
+    - name: Sequence Data Collection Retrieval
+      debug:
+        var: packages
+
+    - name: Sequence Data Collection Retrieval 2
+      debug:
+        var: cities
+
+    - name: Data Collection Retrieval 2
+      debug:
+        var: web_servers

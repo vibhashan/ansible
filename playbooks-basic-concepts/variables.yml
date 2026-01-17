@@ -1,0 +1,21 @@
+- name: Overview of Ansible Variables
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  vars:
+    test: Hello, this is a dummy value
+    name: Vibhashana
+
+  tasks:
+    - name: Read a variable
+      debug:
+        var: test
+
+    - name: Read variables
+      debug:
+        msg:
+          - "{{ test }}"
+          - "{{ name }}"
