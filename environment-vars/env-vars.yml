@@ -1,0 +1,36 @@
+- name: Introduction to Ansible Environment Variables
+  hosts: localhost
+  gather_facts: no
+  environment:
+    PLAY_LEVEL_VAR: This is a play-level environment variable
+
+  tasks:
+    - name: Print a statement without environment variables
+      debug:
+        msg: This is a statement without any environment variables.
+
+    - name: Print system environment variables
+      command: env
+      register: system_env
+
+    - name: Print system environment variables debug
+      debug:
+        msg: "{{ system_env.stdout }}"
+
+    - name: Print play-level environment variables
+      shell: "env | grep PLAY_LEVEL_VAR"
+      register: play_level_env
+
+    - name: Print play-level environment variables debug
+      debug:
+        msg: "{{ play_level_env.stdout }}"
+
+    - name: Set and print task-level environment variables
+      shell: "env | grep TASK_LEVEL_VAR"
+      environment:
+        TASK_LEVEL_VAR: This is a task-level environment variable
+      register: task_level_env
+
+    - name: Print task-level environment variables debug
+      debug:
+        msg: "{{ task_level_env.stdout }}"
