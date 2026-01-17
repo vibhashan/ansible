@@ -1,0 +1,85 @@
+- name: Example Playbook of Pausing for Manual Maintenance
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Notify about maintenance
+      debug:
+        msg: "Maintenance window: please perform the required checks."
+
+    - name: Pause for maintenance
+      pause:
+        prompt: "Press 'Enter' to continue after completing the maintenance tasks."
+
+    - name: Resume operations post-maintenance
+      shell: echo "Maintenance completed, resuming operations."
+
+  tags: scenario-1
+
+- name: Install and Start Apache Web Server
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+  become: true
+  become_user: root
+
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Start and enable Apache2 service
+      systemd:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Pause to allow the web service to started
+      pause:
+        seconds: 30
+
+    - name: Ensure Apache2 is running
+      systemd:
+        name: apache2
+        state: started
+      register: apache_status
+
+    - name: Display Apache2 status
+      debug:
+        msg: Apache2 is {{ apache_status.state }} and enabled.
+
+  tags: scenario-2
+
+- name: Ansible Pause Parameters
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+  become: true
+  become_user: root
+
+  tasks:
+    - name: Pause for 30 seconds
+      pause:
+        seconds: 30
+
+    - name: Pause for user confirmation
+      pause:
+        prompt: "Custom Pause: Press 'Enter' to continue."
+
+    - name: Pause for username input
+      pause:
+        prompt: "Enter your username: "
+        echo: yes
+
+    - name: Pause for password input without echoing
+      pause:
+        prompt: "Enter your password: "
+        echo: no
+
+  tags: scenario-3
