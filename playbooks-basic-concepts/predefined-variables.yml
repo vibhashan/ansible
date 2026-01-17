@@ -1,0 +1,10 @@
+- name: Overview of Ansible Predefined Variables
+  hosts: localhost
+  remote_user: ubuntu
+
+  tasks:
+    - name: Print predefined variables
+      debug:
+        msg:
+          - "inventory_hostname: {{ inventory_hostname }}"
+          - "ansible_hostname: {{ ansible_hostname }}" # Will work if gather_facts is true

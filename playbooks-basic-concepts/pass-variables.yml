@@ -1,0 +1,10 @@
+- name: Overview of Ansible Variables via Command Line
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Print variables
+      debug:
+        msg:
+          - "var1 is {{ var1 | default('default_value1') }}"
+          - "var2 is {{ var2 | default('default_value2') }}"
