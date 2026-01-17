@@ -1,0 +1,23 @@
+- name: Overview of Ansible Filters and Methods
+  hosts: localhost
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  vars:
+    a: hello, Vibhashana here
+    x: HELLO, THIS IS VIBHASHANA
+    b: 10
+    c: "20"
+
+  tasks:
+    - name: Operations on variables
+      debug:
+        msg:
+          - "{{ a | upper }}"
+          - "{{ x | lower }}"
+          - "{{ a | title }}"
+          - "{{ b + c|int }}"
+          - "{{ x.lower() }}"
+          - Split of lowercase x - {{ x.lower().split() }}

@@ -1,0 +1,19 @@
+- name: Overview of Ansible Register
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - name: Get shell version info
+      shell: bash --version
+      register: shell_version # Store the output of the above shell command in 'shell_version' variable
+
+    - name: Store shell version in readable format
+      set_fact:
+        shell_version: "{{ shell_version.stdout_lines[0].split()[3].split('-')[0] }}" # Manipulate the output
+
+    - name: Print shell version
+      debug:
+        var: shell_version

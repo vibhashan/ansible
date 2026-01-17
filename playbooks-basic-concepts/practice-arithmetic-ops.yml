@@ -1,0 +1,31 @@
+- name: Overview of Ansible Arithmetic Operations
+  hosts: localhost
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  vars:
+    a: 10
+    b: "{{ a * 10 }}"
+
+  vars_prompt:
+    - name: x
+      # type: int
+      prompt: Please enter a value for x
+      private: false
+
+    - name: y
+      # type: int
+      prompt: Please enter a value for y
+      private: false
+
+  tasks:
+    - name: Operations on variables
+      debug:
+        msg:
+          - Value of a is {{ a }}
+          - Value of b is {{ b }}
+          - Addition of {{ x }} and {{ y }} is {{ x + y }}
+          - Addition of {{ x }} and {{ y }} is {{ x|int + y|int }}
+          - Multiplication of {{ x }} and {{ y }} is {{ x|int * y|int }}
