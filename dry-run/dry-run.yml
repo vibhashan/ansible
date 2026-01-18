@@ -1,0 +1,20 @@
+- name: Overview of Ansible Dry Run Mode
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Ensure a file exists with specified content
+      copy:
+        dest: /tmp/ansible-test-file.txt
+        content: |
+          This is a test file.
+          Managed by Ansible.
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure a line is present in a file
+      lineinfile:
+        path: /tmp/ansible-test-file.txt
+        line: "ConfigOption=True"
