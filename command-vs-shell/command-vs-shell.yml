@@ -1,0 +1,21 @@
+- name: Command vs Shell
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Using command module to list files
+      command: ls /usr/bin
+      register: command_output
+
+    - name: Print command output
+      debug:
+        var: command_output.stdout_lines
+
+    - name: Using shell module to list files and filter with grep
+      shell: ls /usr/bin | grep 'vim'
+      register: shell_output
+
+    - name: Print shell output
+      debug:
+        msg: "{{ shell_output.stdout_lines }}"
