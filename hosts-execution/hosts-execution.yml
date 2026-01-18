@@ -1,0 +1,32 @@
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Run a command on the local machine
+      command: echo "This command is executed on the local machine"
+
+  tags: scenario-1
+
+- hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+  tasks:
+    - name: Run a command on the remote hosts
+      command: echo "Running on remote hosts"
+
+    - name: Run a command on the local machine
+      command: echo "This command is executed on the localhost"
+      delegate_to: localhost
+
+  tags: scenario-2
+
+- hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+  tasks:
+    - name: Run a command on the remote hosts
+      command: echo "Running on remote hosts"
+
+    - name: Run a command on the local machine
+      local_action: command echo "This command is executed on the localhost"
+
+  tags: scenario-3
