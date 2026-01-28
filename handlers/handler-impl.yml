@@ -1,0 +1,30 @@
+- name: Install Web Server
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  vars:
+    apache2_running_status: Ensure apache is running
+    apache2_check_status: Check apache status
+
+  tasks:
+    - name: Ensure apache is at the latest version
+      apt:
+        name: apache2
+        state: latest
+      notify:
+        - apache2_running_status
+        - apache2_check_status
+
+  handlers:
+    - name: apache2_running_status
+      service:
+        name: apache2
+        state: started
+
+    - name: apache2_check_status
+      service:
+        name: apache2
+        state: started
