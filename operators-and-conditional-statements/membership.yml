@@ -1,0 +1,35 @@
+- name: This will show the use of membership operators
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    a: HELLO
+    b: 10
+    c: 20
+    d: hello
+    e: [1, 5, 6, 8, 108, 45, 20]
+    x: /home/vibhashana
+    y: /home/vibhashana/.venvs/ansible-13.1.0/demo.oci.yaml
+
+  tasks:
+    - name: Operations on variables
+      debug:
+        msg:
+          - The list is - {{ e }}, value of b is - {{ b }} and value of c is - {{ c }}
+          - Is b in e? - {{ b in e }}
+          - Is c in e? - {{ c in e }}
+          - Is b not in e? - {{ b not in e }}
+          - Is c not in e? - {{ c not in e }}
+
+    - name: Tests on variables
+      debug:
+        msg:
+          - Is a defined? - {{ a is defined }}
+          - Is f defined? - {{ f is defined }}
+          - Is b defined? - {{ b is defined }}
+          - Is f undefined? - {{ f is undefined }}
+          - Is a upper? - {{ a is upper }}
+          - Is d string? - {{ d is string }}
+          - Is e string? - {{ e is string }}
+          - Is x directory? - {{ x is directory }}
+          - Is y file? - {{ y is file }}
