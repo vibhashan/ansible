@@ -1,0 +1,25 @@
+- name: This will show the use of conditional statements
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    x: 50
+    y: 20
+
+  tasks:
+    - name: Operations on variables
+      debug:
+        msg:
+          - Value of x - {{ x }}, value of y - {{ y }}
+
+    - name: Operation for conditional statement I
+      when: x < y
+      debug:
+        msg:
+          - "{{ x }} is less than {{ y }}"
+
+    - name: Operation for conditional statement II
+      when: x > y
+      debug:
+        msg:
+          - "{{ x }} is greater than {{ y }}"
