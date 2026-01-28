@@ -1,0 +1,19 @@
+- name: Install Web Server
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - name: Ensure apache is at the latest version
+      apt:
+        name: apache2
+        state: latest
+      register: apache2_installation_status
+
+    - name: Ensure apache is running
+      when: apache2_installation_status.changed
+      service:
+        name: apache2
+        state: started
