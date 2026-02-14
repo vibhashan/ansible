@@ -1,0 +1,30 @@
+- name: Usage of Ansible tags
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Operation using tags I
+      debug:
+        msg: This is debug message 1
+      tags:
+        - first
+        - common
+
+    - name: Operation using tags II
+      debug:
+        msg: This is debug message 2
+      tags:
+        - second
+
+    - name: Operation using tags III
+      debug:
+        msg: This is debug message 3
+      tags:
+        - third
+
+    - name: Operation using tags IV
+      debug:
+        msg: This is debug message 4
+      tags:
+        - fourth
+        - first
