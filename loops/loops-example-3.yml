@@ -1,0 +1,32 @@
+- name: Loops Part III
+  hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+  become: true
+  become_user: root
+
+  vars:
+    packages: ["git", "curl", "vim"]
+
+  tasks:
+    - name: Install multiple packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - curl
+        - vim
+
+    - name: Uninstall multiple packages with index loop
+      apt:
+        name: "{{ item.1 }}"
+        state: absent
+      with_indexed_items: "{{ packages }}"
+
+    - name: Install multiple packages with together loop
+      apt:
+        name: "{{ item.0 }}"
+        state: present
+      with_together:
+        - "{{ packages }}"

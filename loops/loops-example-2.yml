@@ -1,0 +1,35 @@
+- name: Loops Part II
+  hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+  become: true
+  become_user: root
+
+  vars:
+    alpha: ["a", "b", "c", "d"]
+    numbers: [1, 2, 3, 4]
+
+  tasks:
+    - name: Random looping example
+      debug:
+        msg: "This is a random item: {{ item }}"
+      with_random_choice:
+        - hello, there
+        - how are you
+        - this is a random message
+        - I am vibhashana
+
+    - name: Loop over a list with an index
+      debug:
+        msg: "The index is {{ item.0 }} and the value is {{ item.1 }}" # Here 'item.0' is the index and 'item.1' is the value of the list at that index
+      with_indexed_items: "{{ alpha }}"
+
+    # Do-until loop
+    - name: Ensure Apache is running
+      service:
+        name: apache2
+        state: started
+      register: apache_status
+      until: apache_status.changed == True
+      retries: 7
+      delay: 5
