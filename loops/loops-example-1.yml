@@ -1,0 +1,37 @@
+- name: Loops Part I
+  hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+  become: true
+  become_user: root
+
+  vars:
+    alpha: ["a", "b", "c", "d"]
+    numbers: [1, 2, 3, 4]
+
+  tasks:
+    # Add multiple users in one go
+    - name: Add several users
+      user:
+        name: "{{ item }}" # 'item' is a sort of reserved variable to read individual items in 'with_items' loop
+        state: absent
+        groups: users
+      with_items:
+        - testuser1
+        - testuser2
+
+    - name: Add several users
+      user:
+        name: "{{ item.name }}"
+        state: absent
+        groups: "{{ item.group }}"
+      with_items:
+        - { name: "testuser3", group: "users" }
+        - { name: "testuser4", group: "root" }
+
+    - name: Loop over set of collection variables
+      debug:
+        msg: "{{ item.0 }} and {{ item.1 }}"
+      with_together:
+        - "{{ alpha }}"
+        - "{{ numbers }}"
