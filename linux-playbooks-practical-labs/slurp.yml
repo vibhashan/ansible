@@ -1,0 +1,19 @@
+- name: Fetch configuration file from remote server
+  hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+
+  tasks:
+    - name: Fetch nginx configuration file
+      slurp:
+        src: /etc/nginx/nginx.conf
+      register: nginx_conf
+
+    - name: Display fetched content
+      debug:
+        msg: "Fetched content: {{ nginx_conf.content | b64decode }}"
+
+    - name: Save content to a local file
+      copy:
+        content: "{{ nginx_conf.content | b64decode }}"
+        dest: /tmp/nginx.conf

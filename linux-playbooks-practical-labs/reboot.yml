@@ -1,0 +1,36 @@
+---
+- name: Gather and display OS family
+  hosts: all
+  remote_user: ubuntu
+  tasks:
+    - name: Display the OS family
+      debug:
+        msg: The OS family is {{ ansible_facts["os_family"] }}
+
+- name: Reboot remote servers
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  tasks:
+    - name: Apply updates and reboot
+      block:
+        - name: Update all packages
+          when: ansible_facts["os_family"] == "Debian"
+          apt:
+            update_cache: yes
+            upgrade: dist
+
+        - name: Reboot the server
+          reboot:
+            reboot_timeout: 300
+            post_reboot_delay: 10
+            msg: Reboot initiated by Ansible for updates
+
+        - name: Ensure the server is up & running
+          command: uptime
+          register: uptime_result
+
+        - name: Print the uptime result
+          debug:
+            var: uptime_result.stdout

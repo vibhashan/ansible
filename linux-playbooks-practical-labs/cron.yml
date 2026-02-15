@@ -1,0 +1,38 @@
+- name: Schedule a weekly log cleanup
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Ensure the log cleanup script exists
+      copy:
+        src: log-cleanup.sh
+        dest: /tmp/log_cleanup.sh
+        mode: 0755
+
+    - name: Ensure cron is installed
+      become: true
+      apt:
+        name: cron
+        state: present
+
+    # Every Monday at 3:00 AM
+    - name: Schedule the log cleanup script
+      become: true
+      cron:
+        name: Weekly log cleanup
+        minute: 0
+        hour: 3
+        day: "*"
+        month: "*"
+        weekday: 1
+        job: /tmp/log-cleanup.sh
+        user: root
+
+    - name: List cron jobs
+      shell: sudo crontab -l -u root
+      register: crontab_output
+
+    - name: Print cron jobs
+      debug:
+        msg: "{{ crontab_output.stdout_lines }}"

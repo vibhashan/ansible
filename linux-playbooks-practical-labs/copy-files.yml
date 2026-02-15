@@ -1,0 +1,16 @@
+---
+- name: Copy nginx.conf to remote host
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Copy nginx.conf
+      become: true
+      become_user: root
+      copy:
+        src: nginx.conf # Local path of file
+        dest: /tmp/nginx.conf # Destination path or remote host(s)
+        owner: root
+        group: root
+        mode: 0644
