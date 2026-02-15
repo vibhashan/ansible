@@ -1,0 +1,7 @@
+[webservers]
+webserver1.example.com domain=example1.com docroot=/var/www/example1
+webserver2.example.com domain=example2.com docroot=/var/www/example2
+
+[webservers:vars] # Variables that are common to all hosts in '[webservers]'
+error_log=/var/log/apache2/error.log
+custom_log=/var/log/apache2/access.log

@@ -1,0 +1,36 @@
+- name: Deploy Apache virtual hosts
+  hosts: webservers
+  become: yes
+  gather_facts: false
+
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+      notify: Start Apache
+
+    - name: Ensure Apache is enabled and started
+      service:
+        name: apache2
+        state: started
+        enabled: true
+
+    - name: Deploy virtual host config file
+      template:
+        src: templates/vhost.j2
+        dest: /etc/apache2/conf.d/{{ domain }}.conf
+      notify:
+        - Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+
+    - name: Start Apache
+      service:
+        name: apache2
+        state: started
+        enabled: true

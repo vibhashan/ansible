@@ -1,0 +1,27 @@
+---
+- name: Generate example logs on remote host
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Create log directory
+      file:
+        path: /var/log
+        state: directory
+
+    - name: Create log file
+      become: true
+      shell: |
+        echo "This is a test log" > /var/log/test.log
+
+- name: Fetch example logs from remote hosts
+  hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+
+  tasks:
+    - name: Fetch log file
+      fetch:
+        src: /var/log/test.log
+        dest: /tmp/test.log

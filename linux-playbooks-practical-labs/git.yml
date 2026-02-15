@@ -1,0 +1,33 @@
+---
+- name: Clone GitHub repository and perform taks
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - name: Ensure Git is installed
+      apt:
+        name: git
+        state: present
+
+    - name: Clone repository
+      git:
+        repo: https://github.com/ansible/ansible-examples.git
+        dest: /tmp/ansible-examples
+        update: yes
+        version: master
+
+    - name: Print the contents of a file from the repository
+      shell: cat /tmp/ansible-examples/README.md
+      register: readme_content
+
+    - name: Print the contents of a file from the repository
+      debug:
+        msg: "{{ readme_content.stdout }}"
+
+    - name: Cleanup
+      file:
+        path: /tmp/ansible-examples
+        state: absent
