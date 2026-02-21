@@ -1,0 +1,32 @@
+- name: Errror Handling Part I
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - name: List all files/dirs in /home location
+      command: "ls /home"
+      register: home_out
+
+    - name: List all files/dirs in /hjakl location
+      command: "ls /hjakl"
+      register: hjakl_out
+      ignore_errors: true # Will ignore errors and continue execution of the playbook
+
+    - name: List all files/dirs in /tmp location
+      command: "ls /tmp"
+      register: tmp_out
+
+    - name: List all files/dirs in /hjakl2 location
+      command: "ls /hjakl2"
+      register: hjakl2_out
+      failed_when: hjakl_out.rc != 0
+      ignore_errors: true
+
+    - name: Print outputs
+      debug:
+        msg:
+          - "Contents of /home: {{ home_out.stdout }}"
+          - "Contents of /tmp: {{ tmp_out.stdout }}"

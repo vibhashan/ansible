@@ -1,0 +1,35 @@
+- name: Ansible Block
+  hosts: all
+  remote_user: ubuntu
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - block:
+        - name: List user dir content
+          command: ls -l /usr
+          register: usr_out
+
+        - name: List root partition content
+          command: ls -l /root
+          register: root_out
+
+        - name: List invalid partition content
+          command: ls -l /invalid
+          register: invalid_out
+
+        - name: List bin dir content
+          command: ls -l /bin
+          register: bin_out
+
+      become: true
+      ignore_errors: true
+
+    - name: List ansible user's home dir content
+      command: ls -l ~/
+      register: userhome_out
+
+    - debug: var=usr_out
+    - debug: var=root_out
+    - debug: var=userhome_out
+    - debug: var=bin_out

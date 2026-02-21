@@ -1,0 +1,29 @@
+- name: Ansible Rescue
+  hosts: all
+  remote_user: ubuntu
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - block:
+        - name: List home dir content
+          command: ls -l ~/
+
+        - name: Fail intentionally
+          command: ls -l /tmp/non-existent-dir
+
+        - name: List tmp dir
+          command: ls -l /tmp
+
+      become: true
+      ignore_errors: true
+
+      rescue:
+        - name: Rescue block (perform recovery)
+          debug:
+            msg: Something went wrong, cleaning up...
+
+      always:
+        - name: This will execute always
+          debug:
+            msg: I will execute always even in failure scenario
