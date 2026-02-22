@@ -1,0 +1,10 @@
+- name: This will show the use of 'Include' module
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Play 1 - Task 1
+      debug:
+        msg: Play 1 - Task 1
+
+    - include_tasks: tasks-1.yml # Kind of dynamic, parsed during playbook run-time (message logs show explicitly that a module is included)
