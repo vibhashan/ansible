@@ -1,0 +1,14 @@
+- name: Local Action in Ansible
+  hosts: all
+  remote_user: ubuntu
+
+  tasks:
+    - name: Create local file /tmp/local_file.ini
+      local_action: shell touch /tmp/{{ ansible_facts['hostname'] }}_local_file.ini
+      become: true
+      become_user: root
+
+    - name: Copy the local file to remote
+      copy:
+        src: /tmp/{{ ansible_facts['hostname'] }}_local_file.ini
+        dest: /var/tmp
