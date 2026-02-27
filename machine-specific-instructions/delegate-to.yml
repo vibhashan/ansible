@@ -1,0 +1,15 @@
+- name: Delegate To in Ansible
+  hosts: all
+  remote_user: ubuntu
+
+  vars:
+    tmplog: /tmp/connection.log
+
+  tasks:
+    - name: Create tmplog
+      shell: test ! -f {{ tmplog }} && touch {{ tmplog }}
+      failed_when: false
+
+    - name: Delegate To
+      delegate_to: localhost
+      shell: echo "Delegate to . {{ inventory_hostname }} $(hostname) ." >> {{ tmplog }}
