@@ -1,0 +1,53 @@
+- name: Install, configure, verify Nginx and MySQL
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  roles: # Roles installed via roles-requirements.yml
+    - geerlingguy.nginx
+    - geerlingguy.mysql
+
+  tasks:
+    - name: Verify Nginx is installed
+      command: nginx -v
+      register: nginx_version
+      ignore_errors: true
+
+    - name: Check Nginx installation
+      when: nginx_version.rc == 0
+      debug:
+        msg: Nginx version - {{ nginx_version.stderr }} # Displays NG\ginx version if previous command succeeds
+
+    - name: Verify Nginx service is running
+      systemd:
+        name: nginx
+        state: started
+      register: nginx_status
+      ignore_errors: true
+
+    - name: Check Nginx service status
+      when: nginx_status.state == "started"
+      debug:
+        msg: Nginx service is running
+      # Confirms the service status if it is in the 'started' mode
+
+    - name: Verify MySQL is installed
+      command: mysql --version
+      register: mysql_version
+      ignore_errors: true
+
+    - name: Check MySQL installation
+      when: mysql_version.rc == 0
+      debug:
+        msg: MySQL version - {{ mysql_version.stdout }}
+
+    - name: Verify MySQL service is running
+      systemd:
+        name: mysql
+        state: started
+      register: mysql_status
+      ignore_errors: true
+
+    - name: Check MySQL service status
+      when: mysql_status.state == "started"
+      debug:
+        msg: MySQL service is running

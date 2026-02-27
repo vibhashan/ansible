@@ -1,0 +1,7 @@
+- src: geerlingguy.nginx
+  version: 3.2.0
+
+- src: geerlingguy.mysql
+  version: 4.3.4
+# ansible-galaxy install -r roles-requirements.yml
+# Check that the roles are installed in the roles directory (typically ~/.ansible/roles or /etc/ansible/roles)
