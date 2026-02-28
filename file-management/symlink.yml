@@ -1,0 +1,51 @@
+- name: Create and verify soft link for CPU/Memory usage
+  hosts: all
+  remote_user: ubuntu
+  become: true
+
+  tasks:
+    - name: Create a symbolic link to /proc/cpuinfo
+      file:
+        src: /proc/cpuinfo
+        dest: /tmp/cpuinfo_link
+        state: link
+
+    - name: Verify symbolic link creation
+      stat:
+        path: /tmp/cpuinfo_link
+      register: cpuinfo_link_stat
+
+    - debug:
+        msg: Symbolic link exists - {{ cpuinfo_link_stat.stat.islnk }}
+
+    - name: Read content of the symbolic link (CPU info)
+      shell: cat /tmp/cpuinfo_link
+      register: cpuinfo_content
+
+    - name: Print CPU info
+      debug:
+        msg: "{{ cpuinfo_content.stdout }}"
+
+    - name: Create a symbolic link to /proc/meminfo
+      file:
+        src: /proc/meminfo
+        dest: /tmp/meminfo_link
+        state: link
+
+    - name: Verify symbolic link creation for memory info
+      stat:
+        path: /tmp/meminfo_link
+      register: meminfo_link_stats
+
+    - name: Print symbolic link verification result for memory info
+      debug:
+        msg: Symbolic link exists - {{ meminfo_link_stats.stat.islnk }}
+
+    - name: Read content of the symbolic link (Memory info)
+      shell: cat /tmp/meminfo_link
+      register: meminfo_content
+
+    - name: Print Memory info
+      debug:
+        msg: "{{ meminfo_content.stdout }}"
+    

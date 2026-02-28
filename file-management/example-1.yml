@@ -1,0 +1,55 @@
+- name: File Management Playbook
+  hosts: all
+  gather_facts: false
+  remote_user: ubuntu
+
+  tasks:
+    - name: Create an empty File
+      file:
+        path: /tmp/test.txt
+        state: touch
+      register: result_empty_file
+
+    - debug:
+        msg: Empty file created successfully
+      when: result_empty_file.changed
+
+    - name: Create text file
+      file:
+        path: /tmp/text-file.txt
+        state: touch
+        mode: 0644
+      register: result_text_file
+
+    - debug:
+        msg: Text file created successfully
+      when: result_text_file.changed
+
+    - name: Check if file exists
+      stat:
+        path: /tmp/text-file.txt
+      register: file_stat
+
+    - debug:
+        msg: File exists
+      when: file_stat.stat.exists
+
+    - name: Change file permissions
+      file:
+        path: /tmp/text-file.txt
+        mode: 0600
+      register: result_change_permissions
+
+    - debug:
+        msg: File permissions changed successfully
+      when: result_change_permissions.changed
+
+    - name: Delete file if exists
+      file:
+        path: /tmp/unawanted-file.txt
+        state: absent
+      register: result_delete_file
+
+    - debug:
+        msg: File deleted successfully
+      when: result_delete_file.changed

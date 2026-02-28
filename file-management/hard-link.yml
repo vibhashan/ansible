@@ -1,0 +1,38 @@
+- name: Demonstrate hard link with Ansible
+  hosts: all
+  remote_user: ubuntu
+  become: true
+
+  tasks:
+    - name: Create a file
+      file:
+        path: /tmp/source_file.txt
+        state: touch
+        mode: "0644"
+
+    - name: Create a hard link to the file
+      file:
+        src: /tmp/source_file.txt
+        dest: /tmp/hard_link_to_source
+        state: hard
+
+    - name: Verify existence of the hard link
+      stat:
+        path: /tmp/hardlink_to_source
+      register: hard_link_stat
+
+    - debug:
+        msg: Hard link exists - {{ hard_link_stat.stat.exists }}
+
+    - name: Remove the hard link
+      file:
+        path: /tmp/hardlink_to_source
+        state: absent
+
+    - name: Verify removal of the hard link
+      stat:
+        path: /tmp/hardlink_to_source
+      register: hard_link_stat
+
+    - debug:
+        msg: Hard link exists after deletion - {{ hard_link_stat.stat.exists }}

@@ -1,0 +1,57 @@
+- name: Manage directory operations
+  hosts: all
+  become: true
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Create directory
+      file:
+        path: /tmp/example-dir
+        state: directory
+      register: dir_created
+
+    - debug:
+        msg: Directory created successfully
+      when: dir_created.changed
+
+    - name: Check if directory exists
+      stat:
+        path: /tmp/example-dir
+      register: dir_stat
+
+    - debug:
+        msg: Directory exists
+      when: dir_stat.stat.exists
+
+    - name: Rename a directory
+      file:
+        path: /tmp/example-dir
+        state: directory
+        dest: /tmp/renamed-dir
+      register: dir_renamed
+
+    - debug:
+        msg: Directory renamed successfully
+      when: dir_renamed.changed
+
+    - name: Provide recursive permissions to directory content
+      file:
+        path: /tmp/renamed-dir
+        recurse: yes
+        mode: 0755
+      register: dir_permissions
+
+    - debug:
+        msg: Recursive permissions set successfully
+      when: dir_permissions.changed
+
+    - name: Delete a directory
+      file:
+        path: /tmp/renamed-dir
+        state: absent
+      register: dir_deleted
+
+    - debug:
+        msg: Directory deleted successfully
+      when: dir_deleted.changed
