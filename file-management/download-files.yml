@@ -1,0 +1,34 @@
+- name: Download a file using get_url
+  hosts: all
+  remote_user: ubuntu
+  become: true
+
+  tasks:
+    - name: Download a jq utility
+      get_url:
+        url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+        dest: /usr/local/bin/jq
+        mode: "0755"
+
+    # - name: Download jq utility with checksum validation
+    #   get_url:
+    #     url: https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux64
+    #     dest: /usr/local/bin/jq-1.7
+    #     checksum: 'sha256:abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567890abcdef'
+    #     mode: 0755
+
+    - name: Download POM file
+      get_url:
+        url: https://repo1.maven.org/maven2/sfx4j/sfx4j/1.0/sfx4j-1.0.pom
+        dest: /etc/sfx4j.pom
+        mode: 0644
+
+    - name: Download files
+      get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        mode: 0644
+      loop:
+        - {
+            url: "https://repo1.maven.org/maven2/com/squareup/retrofit2/retrofit/2.8.2/retrofit-2.8.2.jar", dest: "/tmp/retrofit.jar"
+          }
