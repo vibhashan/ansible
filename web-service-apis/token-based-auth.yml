@@ -1,0 +1,48 @@
+- name: Token based authentication with REST API Endpoint
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: false
+
+  vars:
+    login_url: https://dummyjson.com/auth/login
+    get_url: https://dummyjson.com/auth/me
+    auth_body:
+      username: "emilys"
+      password: "emilyspass"
+    new_user:
+      name: "John Doe"
+      job: "Software Engineer"
+
+  tasks:
+    - name: Login to DummyJson API to obtain authentication token
+      uri:
+        url: "{{ login_url }}"
+        method: POST
+        body_format: json
+        headers:
+          Content-Type: "application/json"
+        body: "{{ auth_body }}"
+        return_content: yes
+        status_code: 200
+      register: login_response
+
+    - name: Display the login response
+      debug:
+        var: login_response.json
+
+    - name: Extract the authentication token
+      set_fact:
+        access_token: "{{ login_response.json.accessToken }}"
+
+    - name: Get current auth user
+      uri:
+        url: "{{ get_url }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ access_token }}"
+        return_content: yes
+      register: get_response
+
+    - name: Display the get response
+      debug:
+        var: get_response.json
