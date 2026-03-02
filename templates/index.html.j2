@@ -1,0 +1,11 @@
+Hi, This is a custom index file
+
+Executing on Machine IP: {{ ansible_facts['default_ipv4']['address'] }}
+
+OS Family: {{ ansible_facts['os_family'] }}
+
+Machine FQDN: {{ ansible_facts['fqdn'] }}
+
+This is Distro: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
+
+Hard coded variable: {{ hard_coded_variable }}

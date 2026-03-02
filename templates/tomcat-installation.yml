@@ -1,0 +1,46 @@
+- name: Install Tomcat
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+
+  vars:
+    java_version: openjdk-8-jdk
+    tomcat_version: 9.0.65
+    tomcat_dir: /usr/local
+    tomcat_port: 5001
+  
+  tasks:
+    - name: Update all packages on machine
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Install Java 8
+      apt:
+        name: "{{ java_version }}"
+        state: present
+
+    - name: Download Tomcat 9
+      get_url:
+        url: https://archive.apache.org/dist/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz
+        dest: "{{ tomcat_dir }}"
+    
+    - name: Extract Tomcat
+      unarchive:
+        src: "{{ tomcat_dir }}/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "{{ tomcat_dir }}"
+        remote_src: yes
+
+    - name: Rename Tomcat dir
+      command: mv {{ tomcat_dir }}/apache-tomcat-{{ tomcat_version }} {{ tomcat_dir }}/tomcat
+
+    - name: Update Tomcat port
+      template:
+        src: server.xml.j2
+        dest: "{{ tomcat_dir }}/tomcat/conf/server.xml"
+
+    - name : Start Tomcat
+      command: nohup "{{ tomcat_dir }}/tomcat/bin/startup.sh" &
+
+  
