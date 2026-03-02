@@ -1,0 +1,33 @@
+- name: Install Apache
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+
+  vars:
+    hard_coded_variable: Hard coded value
+
+  tasks:
+    - name: Ensure Apache is at the latest version
+      apt:
+        name: apache2
+        state: latest
+      notify:
+        - Ensure Apache is running
+        - Restart Apache
+
+    - name: Update Index html file
+      template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+      
+  handlers:
+    - name: Ensure Apache is running
+      service:
+        name: apache2
+        state: started
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
