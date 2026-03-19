@@ -1,0 +1,69 @@
+- name: Configure docker network and containers
+  remote_user: ubuntu
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Terminate all running containers
+      shell: docker rm -f $(docker ps -aq)
+      ignore_errors: true
+      chnaged_when: false
+
+    - name: Remove Docker network if exists
+      shell: docker network rm my_network
+      ignore_errors: true
+      register: network_removal_result
+      changed_when: network_removal_result.rc == 0
+
+    - name: Create a Docker network with a specific subnet
+      shell: docker network create --subnet=172.18.0.0/16 my_network
+      register: network_creation_result
+      changed_when: "'already exists' not in network_creation_result.stderr"
+
+    - name: Run Nginx container with specific IP
+      community.docker.docker_container:
+        name: nginx_container
+        image: nginx:latest
+        state: started
+        networks:
+          - name: my_network
+            ipv4_address: 172.18.0.2
+        env:
+          MYSQL_ROOT_PASSWORD: example
+
+    - name: Run MYSQL container with specific IP
+      community.docker.docker_container:
+        name: mysql_container
+        image: mysql:latest
+        state: started
+        networks:
+          - name: my_network
+            ipv4_address: 172.18.0.3
+        env:
+          MYSQL_ROOT_PASSWORD: example
+
+    - name: Show all runnning containers before termination
+      command: docker container ls
+      register: running_containers_before
+
+    - name: Display running containers before termination
+      debug:
+        var: running_containers_before.stdout
+
+    - name: Stop and remove Nginx container
+      community.docker.docker_container:
+        name: nginx_container
+        state: absent
+
+    - name: Stop and remove MySQL container
+      community.docker.docker_container:
+        name: mysql_container
+        state: absent
+
+    - name: Show all runnning containers after termination
+      command: docker container ls
+      register: running_containers_after
+
+    - name: Display running containers after termination
+      debug:
+        var: running_containers_after.stdout

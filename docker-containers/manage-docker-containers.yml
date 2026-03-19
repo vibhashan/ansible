@@ -1,0 +1,63 @@
+- name: Manage Docker Containers
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: true
+
+  tasks:
+    - name: Ensure Docker is installed
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull the latest nginx image
+      community.docker.docker_image:
+        name: nginx:latest
+        source: pull
+
+    - name: Create and start a new nginx container
+      community.docker.docker_container:
+        name: my-nginx
+        image: nginx:latest
+        state: started
+        ports:
+          - "80:80"
+
+    - name: Create and start a new Redis container
+      community.docker.docker_container:
+        name: my-redis
+        image: redis:latest
+        state: started
+        ports:
+          - "6379:6379"
+
+    - name: List all running containers
+      command: docker container ls
+      register: running_containers
+
+    - name: Display running containers
+      debug:
+        var: running_containers.stdout
+
+    - name: Stop and remove the Nginx container
+      community.docker.docker_container:
+        name: my-nginx
+        state: absent
+
+    - name: Stop and remove the Redis container
+      community.docker.docker_container:
+        name: my-redis
+        state: absent
+
+    - name: List all running containers after cleanup
+      command: docker container ls
+      register: running_containers
+      
+    - name: Display running containers after cleanup
+      debug:
+        var: running_containers.stdout
