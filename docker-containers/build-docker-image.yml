@@ -1,0 +1,48 @@
+- name: Build Docker Image
+  hosts: all
+  remote_user: ubuntu
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Copy application files
+      copy:
+        src: my-app/
+        dest: /tmp/my-app/
+
+    - name: Build Docker image
+      community.docker.docker_image:
+        name: my-flask-app
+        build:
+          path: /tmp/my-app/
+        tags:
+          - latest
+        source: build
+
+    - name: Remove application files after building image
+      file:
+        path: /tmp/my-app
+        state: absent
+
+    - name: Start Docker container
+      community.docker.docker_container:
+        name: my-flask-app
+        image: my-flask-app:latest
+        state: started
+        command: sleep infinity
+        ports:
+          - "8080:80"
+
+    - name: Ensure the container is running
+      community.docker.docker_container_info:
+        name: my-flask-app
+      register: container_info
+
+    - name: Display container status
+      debug:
+        var: container_info
+
+    - name: Stop and remove the container
+      community.docker.docker_container:
+        name: my-flask-app
+        state: absent
